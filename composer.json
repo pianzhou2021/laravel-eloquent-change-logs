@@ -1,0 +1,73 @@
+{
+    "name": "pianzhou/laravel-eloquent-change-logs",
+    "description": "This is laravel extension packages",
+    "keywords": [
+        "laravel",
+        "eloquent",
+        "change-logs",
+        "psr-3"
+    ],
+    "homepage": "https://github.com/pianzhou2021/laravel-eloquent-change-logs",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pian Zhou",
+            "email": "pianzhou2021@163.com",
+            "homepage": "https://github.com/pianzhou2021/laravel-eloquent-change-logs"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "laravel/framework": "^9.0|^10.0|^11.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.36",
+        "phpunit/phpunit": "^9.5"
+    },
+    "suggest": [],
+    "autoload": {
+        "psr-4": {
+            "Pianzhou\\ChangeLog\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Pianzhou\\ChangeLog\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    },
+    "provide": [],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Pianzhou\\ChangeLog\\EloquentChangeLogServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "lock": false,
+        "sort-packages": true,
+        "platform-check": false
+    },
+    "scripts": {
+        "test": "XDEBUG_MODE=coverage vendor/bin/phpunit",
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
+        ]
+    }
+}
