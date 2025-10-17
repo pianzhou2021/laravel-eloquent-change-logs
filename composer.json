@@ -46,7 +46,7 @@
         },
         "laravel": {
             "providers": [
-                "Pianzhou\\ChangeLog\\EloquentChangeLogServiceProvider"
+                "Pianzhou\\EloquentChangeLog\\EloquentChangeLogServiceProvider"
             ]
         }
     },
