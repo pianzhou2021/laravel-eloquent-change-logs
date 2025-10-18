@@ -66,28 +66,33 @@ class ChangeLogObserver
         $data   = collect($model->getAttributes())->map(function($value, $name) {
             return substr($value, 0, Config::get('max_value_length', 255));
         });
-        $originals  = collect($model->getChanges())->filter(function ($value, $name) use ($model) {
-            return in_array($name, $model->watches());
-        })->map(function ($value, $name) use ($model) {
-            return $model->getOriginal($name);
-        });
-        
-        $description    = $originals->map(function ($value, $name) use ($model) {
-            return sprintf('%s[%s->%s]',
-                $model->getTranslatedName($name),
-                $model->getTranslatedValue($name, $value),
-                $model->getTranslatedValue($name, $model->getAttribute($name))
-            );
-        })->implode(', ');
 
-        $this->repository->record(
-            $model,
-            Type::UPDATED,
-            $model->getKey(),
-            $description,
-            $originals->toArray(),
-            $data->toArray()
-        );
+        $changes   = collect($model->getChanges())->filter(function ($value, $name) use ($model) {
+            return in_array($name, $model->watches()) && $model->getOriginal($name) != $value;
+        });
+
+        if ($changes->isNotEmpty()) {
+            $originals  = $changes->map(function ($value, $name) use ($model) {
+                return $model->getOriginal($name);
+            });
+            
+            $description    = $originals->map(function ($value, $name) use ($model) {
+                return sprintf('%s[%s->%s]',
+                    $model->getTranslatedName($name),
+                    $model->getTranslatedValue($name, $value),
+                    $model->getTranslatedValue($name, $model->getAttribute($name))
+                );
+            })->implode(', ');
+
+            $this->repository->record(
+                $model,
+                Type::UPDATED,
+                $model->getKey(),
+                $description,
+                $originals->toArray(),
+                $data->toArray()
+            );
+        }
     }
 
     /**
